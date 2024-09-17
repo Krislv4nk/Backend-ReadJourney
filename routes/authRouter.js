@@ -4,7 +4,7 @@ import authController from "../controllers/authController.js";
 
 import validateBody from "../helpers/validateBody.js";
 
-import {userSignupSchema, userSigninSchema} from "../schemas/usersSchemas.js";
+import {userSignupSchema, userSigninSchema} from "./../schemas/userSchema.js";
 
 import authenticate from "../middlewares/authenticate.js";
 

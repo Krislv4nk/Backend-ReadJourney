@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 import "dotenv/config"; 
 import fs from "fs/promises";
 import path from "path";
-import Jimp from "jimp";
+import {Jimp} from "jimp";
 import { nanoid } from "nanoid";
 import sendEmail from "../helpers/sendEmail.js";
 
