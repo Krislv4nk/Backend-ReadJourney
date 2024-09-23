@@ -4,7 +4,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import "dotenv/config";
 
-// import contactsRouter from "./routes/contactsRouter.js";
+import booksRouter from "./routes/booksRouter.js";
 import authRouter from "./routes/authRouter.js";
 
 const { PORT = 3000, DB_HOST } = process.env;
@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 app.use("/api/users",authRouter);
-// app.use("/api/myBooks", contactsRouter);
+app.use('/api/books', booksRouter);
 
 app.use((_, res) => {
 res.status(404).json({ message: "Route not found" });
