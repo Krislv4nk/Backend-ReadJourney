@@ -26,9 +26,11 @@ const {JWT_SECRET,BASE_URL} = process.env;
 
     await sendEmail(verifyEmail);
     
-    res.status(201).json({user:{
-      email: newUser.email,
+   res.status(201).json({
+     user: {
       username: newUser.username,
+      email: newUser.email,
+      subscription: newUser.subscription,
   }});
 }  
 
