@@ -65,7 +65,7 @@ export const getFavoriteBooks = async (userId) => {
 
 
 //
-const getBookById = async (req, res) => {
+export const getBookById = async (req, res) => {
   const { id } = req.params;
   const book = await Book.findById(id); 
 

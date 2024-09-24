@@ -40,6 +40,18 @@ const fetchBookByISBN = async (req, res) => {
   res.status(200).json(book);
 };
 
+// Отримання книги за ID
+const getBookById = async (req, res) => {
+  const { id } = req.params;
+  const book = await booksServices.getBookById(id);
+
+  if (!book) {
+    return res.status(404).json({ message: 'Book not found' });
+  }
+
+  res.status(200).json(book);
+};
+
 // Оновлення поточної сторінки, де користувач зупинився читати
 const updateCurrentPage = async (req, res) => {
   const { userId } = req.user;
@@ -64,6 +76,7 @@ export default {
   getFavorites: ctrlWrapper(getFavorites),
   fetchTopBooks: ctrlWrapper(fetchTopBooks),
   fetchBookByISBN: ctrlWrapper(fetchBookByISBN),
+  getBookById: ctrlWrapper(getBookById),
   updateCurrentPage: ctrlWrapper(updateCurrentPage), 
   getCurrentPage: ctrlWrapper(getCurrentPage), 
 };

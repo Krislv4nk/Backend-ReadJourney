@@ -37,7 +37,7 @@ const userSchema = new Schema(
     },
         favorites: [
     {
-      book: { type: mongoose.Schema.Types.ObjectId, ref: 'Book' },
+      book: { type: Schema.Types.ObjectId, ref: 'Book' },
       currentPage: { type: Number, default: 1 }, 
     },
   ],

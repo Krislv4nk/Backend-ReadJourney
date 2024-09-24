@@ -7,7 +7,7 @@ const bookRouter = express.Router();
 
 bookRouter.get('/favorites', authenticate, booksController.getFavorites);
 
-bookRouter.get('/books/:id',authenticate, booksController.getBookById);
+bookRouter.get('/favorites/:bookId', authenticate, booksController.getBookById);
 
 bookRouter.post('/favorites', authenticate, booksController.addBook);
 
