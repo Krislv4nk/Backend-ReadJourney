@@ -34,7 +34,13 @@ const userSchema = new Schema(
         },
         verificationToken: {
           type: String,
-        },
+    },
+        favorites: [
+    {
+      book: { type: mongoose.Schema.Types.ObjectId, ref: 'Book' },
+      currentPage: { type: Number, default: 1 }, 
+    },
+  ],
       },
     { versionKey: false, timestamps: true }
 );
