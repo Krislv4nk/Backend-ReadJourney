@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const HUGGING_FACE_API_URL = 'https://api-inference.huggingface.co/models/sentence-transformers/paraphrase-MiniLM-L6-v2';
-const HUGGING_FACE_API_KEY = process.env.HUGGING_FACE_API_KEY; 
+const { HUGGING_FACE_API_URL, HUGGING_FACE_API_KEY } = process.env;
+ 
 
 const getEmbeddings = async (texts) => {
   try {

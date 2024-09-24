@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const HUGGING_FACE_API_URL = 'https://api-inference.huggingface.co/models/EleutherAI/gpt-neo-2.7B';
-const HUGGING_FACE_API_KEY = process.env.HUGGING_FACE_API_KEY; 
+const { HUGGING_FACE_API_URL, HUGGING_FACE_API_KEY } = process.env; 
 
 const textGeneration = async (prompt) => {
   try {
