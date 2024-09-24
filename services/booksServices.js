@@ -63,6 +63,19 @@ export const getFavoriteBooks = async (userId) => {
   return user.favorites;
 };
 
+
+//
+const getBookById = async (req, res) => {
+  const { id } = req.params;
+  const book = await Book.findById(id); 
+
+  if (!book) {
+    return res.status(404).json({ message: 'Book not found' });
+  }
+
+  res.status(200).json(book); 
+};
+
 // Оновлення поточної сторінки книги
 export const updateCurrentPage = async (userId, bookId, currentPage) => {
   const user = await User.findById(userId);

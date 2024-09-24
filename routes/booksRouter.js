@@ -7,6 +7,8 @@ const bookRouter = express.Router();
 
 bookRouter.get('/favorites', authenticate, booksController.getFavorites);
 
+bookRouter.get('/books/:id',authenticate, booksController.getBookById);
+
 bookRouter.post('/favorites', authenticate, booksController.addBook);
 
 bookRouter.delete('/favorites/:bookId', authenticate, booksController.removeBook);
