@@ -1,4 +1,4 @@
-// aiRouter.js
+
 import express from 'express';
 import authenticate from '../middlewares/authenticate.js';
 import { generateSummary } from '../services/openaiService.js';

@@ -1,9 +1,12 @@
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from "openai";
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+
+const { OPENAI_API_KEY, $PROJECT_ID } = process.env;
+
+const openai = new OpenAI({
+    organization: "",
+    project: "$PROJECT_ID",
 });
-const openai = new OpenAIApi(configuration);
 
 export async function generateSummary(text) {
   const response = await openai.createCompletion({

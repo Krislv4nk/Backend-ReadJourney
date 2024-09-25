@@ -3,7 +3,7 @@ import morgan from "morgan";
 import cors from "cors";
 import mongoose from "mongoose";
 import "dotenv/config";
-
+import aiRouter from './routes/aiRouter.js';
 import booksRouter from "./routes/booksRouter.js";
 import authRouter from "./routes/authRouter.js";
 
@@ -18,6 +18,7 @@ app.use(express.static("public"));
 
 app.use("/api/users",authRouter);
 app.use('/api/books', booksRouter);
+app.use('/api/ai', aiRouter);
 
 app.use((_, res) => {
 res.status(404).json({ message: "Route not found" });
