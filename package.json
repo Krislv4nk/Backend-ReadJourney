@@ -13,6 +13,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google-cloud/text-to-speech": "^5.4.0",
     "@huggingface/inference": "^2.8.0",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
@@ -27,7 +28,8 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "nanoid": "^5.0.7",
-    "nodemailer": "^6.9.15"
+    "nodemailer": "^6.9.15",
+    "openai": "^4.63.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
