@@ -6,6 +6,7 @@ import "dotenv/config";
 import { nanoid } from "nanoid";
 import sendEmail from "../helpers/sendEmail.js";
 
+
 const {JWT_SECRET,BASE_URL} = process.env;
 
 
@@ -107,6 +108,60 @@ const updateStatus = async(req, res)=> {
     res.status(200).json({subscription});
 }
 
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ message: "Missing required field email" });
+  }
+
+  const user = await user.findOne({ email });
+  if (!user) {
+    throw HttpError(404, "User not found or email is wrong!!!");
+  }
+
+  const nanoid = customAlphabet("1234567890qwertyuiopasdfghjklzxcvbnm", 16);
+  const passwordResetToken = nanoid();
+
+  user.passwordResetToken = passwordResetToken;
+  await user.save();
+
+  const passwordResetLink = `"https://${BASE_URL}/read-jorney-frontend/forgot-password/${passwordResetToken}"`;
+
+  const toEmail = {
+    to: email,
+    subject: "Restore Password",
+    html: `We received a request to reset your password for your WaterTracker account. Your password reset link: ${passwordResetLink}`,
+  };
+
+  await sendEmail(toEmail);
+
+  res.status(200).json({
+    message: `Message sent to email: ${email}`,
+  });
+};
+
+const recoverPassword = async (req, res) => {
+  const { password, token } = req.body;
+  if (!password || !token) {
+    return res.status(400).json({ message: "Bad request" });
+  }
+
+  const user = await User.findOne({ passwordResetToken: token });
+  if (!user) {
+    return res.status(400).json({ message: "Bad request" });
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  user.password = hashedPassword;
+  user.passwordResetToken = null;
+
+  await user.save();
+
+  res.status(200).json({
+    message: `Password changed to: ${user.email}`,
+  });
+};
+
 export default {
     signup: ctrlWrapper(signup),
     verify: ctrlWrapper(verify),
@@ -115,4 +170,6 @@ export default {
     getCurrent: ctrlWrapper(getCurrent),
     signout: ctrlWrapper(signout),
     updateStatus: ctrlWrapper(updateStatus),
+     forgotPassword: ctrlWrapper(forgotPassword),
+  recoverPassword: ctrlWrapper(recoverPassword),
 };

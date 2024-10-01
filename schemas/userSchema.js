@@ -21,3 +21,14 @@ export const userEmailSchema = Joi.object({
         'any.required': "missing required field email"
     })
 })
+
+
+export const resetPasswordSchema = Joi.object({
+  newPassword: Joi.string().min(8).max(16).required(),
+  token: Joi.string().required(),
+});
+
+export const recoverPasswordSchema = Joi.object({
+  password: Joi.string().min(8).max(16).required(),
+  token: Joi.string().required(),
+});

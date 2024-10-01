@@ -1,0 +1,775 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "ReadJourney API",
+    "description": "API for ReadJourney app"
+  },
+  "servers": [
+    { "url": "http://localhost:3000/api-docs" }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authorization endpoints"
+    }
+  ],
+  "paths": {
+    "/users/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User Sign up",
+        "description": "Creates a new user account with the provided email and password.",
+        "requestBody": {
+          "description": "User's email and password",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignupRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignupResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Email in use",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid request data",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/signin": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User Sign in",
+        "requestBody": {
+          "description": "Signin credentials",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SigninRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Signin successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SigninResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/forgot-password": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Reset password",
+        "description": "Sends a password reset link to the user's email if the email is registered in the system.",
+        "requestBody": {
+          "description": "Email of the user to reset password.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset email sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Message sent to email: user@example.com"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required email field",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Missing required field email"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No user found with the provided email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User not found or email is wrong!!!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/recover-password": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Recover password",
+        "description": "Allows users to set a new password using a password reset token.",
+        "requestBody": {
+          "description": "Password reset data including the new password and the token.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecoverPasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password successfully changed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Password changed to: user@example.com"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request due to missing fields or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Bad request"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/signout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User Sign out",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Logout successful, no content to return."
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          }
+        }
+      }
+    },
+   
+    
+    "/users/current": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get current user info",
+        "description": "Retrieves the authenticated user's personal information.",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of user information.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The user is not logged in or the token is invalid."
+          },
+          "404": {
+            "description": "User not found."
+          }
+        }
+      }
+    },
+
+    "/books/recommended": {
+      "get": {
+        "tags": ["books"],
+        "summary": "Get recommended books",
+        "description": "Fetches recommended books for today for the authenticated user.",
+        "operationId": "fetchRecommendedBooks",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the recommended books. If no books are found, returns a message indicating no books are available.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "You have recommended books."
+                    },
+                    "arrayRecommendedBooks": {
+                      "type": "array",
+                      "description": "List of recommended books.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "recommended books": {
+                            "type": "string",
+                            "format": "hh:mm",
+                            "description": ""
+                          },
+                          "value": {
+                            "type": "number",
+                            "description": "Amount of water consumed at this time, in milliliters."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access, token missing or invalid."
+          },
+          "404": {
+            "description": "The specified resource was not found."
+          }
+        }
+      }
+    },
+    "/books/popular": {
+  "get": {
+    "tags": ["Books"],
+    "summary": "Fetch popular books",
+    "description": "Retrieves a list of popular books.",
+    "security": [
+      {
+        "Bearer": []
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "List of popular books retrieved successfully.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Book"
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized. The user is not logged in or the token is invalid."
+      }
+    }
+  }
+},
+"/books/{isbn}": {
+  "get": {
+    "tags": ["Books"],
+    "summary": "Fetch a book by ISBN",
+    "description": "Retrieves details of a specific book by its ISBN.",
+    "security": [
+      {
+        "Bearer": []
+      }
+    ],
+    "parameters": [
+      {
+        "in": "path",
+        "name": "isbn",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "The unique identifier (ISBN) of the book."
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Book details retrieved successfully.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Book"
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Book not found with the provided ISBN."
+      },
+      "401": {
+        "description": "Unauthorized. The user is not logged in or the token is invalid."
+      }
+    }
+  }
+},
+"/books/favorites": {
+  "get": {
+    "tags": ["Books"],
+    "summary": "Get favorite books",
+    "description": "Fetches a list of favorite books for the authenticated user.",
+    "security": [
+      {
+        "Bearer": []
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "List of favorite books retrieved successfully.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Book"
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized. The user is not logged in or the token is invalid."
+      }
+    }
+  },
+  "post": {
+    "tags": ["Books"],
+    "summary": "Add a book to favorites",
+    "description": "Adds a book to the authenticated user's list of favorite books.",
+    "security": [
+      {
+        "Bearer": []
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["bookId"],
+            "properties": {
+              "bookId": {
+                "type": "string",
+                "description": "The unique identifier (ISBN) of the book to add to favorites.",
+                "example": "978-3-16-148410-0"
+              }
+            }
+          }
+        }
+      },
+    "responses": {
+      "200": {
+        "description": "Book successfully added to favorites.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Book added to favorites successfully."
+                },
+                "favoriteBook": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Bad request. Missing or invalid parameters in the request body."
+      },
+      "404": {
+        "description": "Book not found with the provided ISBN."
+      },
+      "401": {
+        "description": "Unauthorized. The user is not logged in or the token is invalid."
+      }
+    }
+  }
+},
+"/books/favorites/{bookId}": {
+  "get": {
+    "tags": ["Books"],
+    "summary": "Get a specific favorite book by ID",
+    "description": "Fetches details of a specific book from the user's favorites by its unique ID (ISBN).",
+    "security": [
+      {
+        "Bearer": []
+      }
+    ],
+    "parameters": [
+      {
+        "in": "path",
+        "name": "bookId",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "The unique identifier (ISBN) of the book."
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Book details retrieved successfully.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Book"
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Book not found with the provided ID."
+      },
+      "401": {
+        "description": "Unauthorized. The user is not logged in or the token is invalid."
+      }
+    }
+  },
+  "delete": {
+    "tags": ["Books"],
+    "summary": "Remove a book from favorites",
+    "description": "Deletes a specific book from the user's favorites by its ID (ISBN).",
+    "security": [
+      {
+        "Bearer": []
+      }
+    ],
+    "parameters": [
+      {
+        "in": "path",
+        "name": "bookId",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "The unique identifier (ISBN) of the book to delete."
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Book successfully removed from favorites.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Book removed from favorites successfully."
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Book not found with the provided ID."
+      },
+      "401": {
+        "description": "Unauthorized. The user is not logged in or the token is invalid."
+      }
+    }
+  }
+},
+"/books/favorites/{bookId}/page": {
+  "patch": {
+    "tags": ["Books"],
+    "summary": "Update current reading page",
+    "description": "Updates the current page where the user stopped reading a specific favorite book.",
+    "security": [
+      {
+        "Bearer": []
+      }
+    ],
+    "parameters": [
+      {
+        "in": "path",
+        "name": "bookId",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "The unique identifier (ISBN) of the book."
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["currentPage"],
+            "properties": {
+              "currentPage": {
+                "type": "number",
+                "description": "The current page number where the user stopped reading.",
+                "example": 123
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Current page updated successfully.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Current page updated successfully."
+                },
+                "currentPage": {
+                  "type": "number",
+                  "example": 123
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Book not found with the provided ID."
+      },
+      "401": {
+        "description": "Unauthorized. The user is not logged in or the token is invalid."
+      }
+    }
+  },
+  "get": {
+    "tags": ["Books"],
+    "summary": "Get current reading page",
+    "description": "Fetches the current page where the user last stopped reading a specific favorite book.",
+    "security": [
+      {
+        "Bearer": []
+      }
+    ],
+    "parameters": [
+      {
+        "in": "path",
+        "name": "bookId",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "The unique identifier (ISBN) of the book."
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Current page retrieved successfully.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "currentPage": {
+                  "type": "number",
+                  "example": 123
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Book not found with the provided ID."
+      },
+      "401": {
+        "description": "Unauthorized. The user is not logged in or the token is invalid."
+      }
+    }
+  }
+}}},
+
+        
+  "components": {
+  "schemas": {
+    "SignupRequest": {
+      "type": "object",
+      "required": ["email", "password"],
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address for user registration"
+        },
+        "password": {
+          "type": "string",
+          "description": "Password for user registration"
+        }
+      }
+    },
+    "RegistrationResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Congratulations! You have successfully registered!"
+        },
+        "newUser": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "description": "Unique identifier for the user."
+            },
+            "email": {
+              "type": "string",
+              "description": "Email address of the user."
+            },
+            "token": {
+              "type": "string",
+              "description": "JWT token for the user."
+            },
+            "name": {
+              "type": "string",
+              "description": "Full name of the user."
+            }
+          }
+        }
+      }
+    },
+    "LoginRequest": {
+      "type": "object",
+      "required": ["email", "password"],
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email"
+        },
+        "password": {
+          "type": "string",
+          "description": "User's password",
+          "example": "qwerty123"
+        }
+      }
+    },
+    "LoginResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Congratulations! Login successful!"
+        },
+        "user": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "description": "Unique identifier for the user."
+            },
+            "email": {
+              "type": "string",
+              "description": "Email address of the user."
+            },
+            "token": {
+              "type": "string",
+              "description": "JWT token for the user."
+            },
+            "name": {
+              "type": "string",
+              "description": "Full name of the user."
+            }
+          }
+        }
+      }
+    }
+  },
+  "securitySchemes": {
+    "Bearer": {
+      "type": "http",
+      "scheme": "bearer",
+      "bearerFormat": "JWT"
+    }
+  }
+}
+}

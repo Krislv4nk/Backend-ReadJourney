@@ -4,22 +4,21 @@ import booksController from "../controllers/booksController.js";
 
 const bookRouter = express.Router();
 
-
-bookRouter.get('/favorites', authenticate, booksController.getFavorites);
-
-bookRouter.get('/favorites/:bookId', authenticate, booksController.getBookById);
-
-bookRouter.post('/favorites', authenticate, booksController.addBook);
-
-bookRouter.delete('/favorites/:bookId', authenticate, booksController.removeBook);
-
 bookRouter.get('/books/popular', authenticate, booksController.fetchTopBooks);
 
 bookRouter.get('/books/:isbn', authenticate, booksController.fetchBookByISBN);
 
-bookRouter.patch('/favorites/:bookId/page', authenticate, booksController.updateCurrentPage);
+bookRouter.get('/books/favorites', authenticate, booksController.getFavorites);
 
-bookRouter.get('/favorites/:bookId/page', authenticate, booksController.getCurrentPage);
+bookRouter.get('/books/favorites/:bookId', authenticate, booksController.getBookById);
+
+bookRouter.post('/books/favorites', authenticate, booksController.addBook);
+
+bookRouter.delete('/books/favorites/:bookId', authenticate, booksController.removeBook);
+
+bookRouter.patch('/books/favorites/:bookId/page', authenticate, booksController.updateCurrentPage);
+
+bookRouter.get('/books/favorites/:bookId/page', authenticate, booksController.getCurrentPage);
 
 export default bookRouter;
 

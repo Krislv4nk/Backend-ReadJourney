@@ -29,7 +29,10 @@
     "multer": "^1.4.5-lts.1",
     "nanoid": "^5.0.7",
     "nodemailer": "^6.9.15",
-    "openai": "^4.63.0"
+    "openai": "^4.63.0",
+    "swagger": "^0.7.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
