@@ -255,61 +255,6 @@
       }
     },
 
-    "/books/recommended": {
-      "get": {
-        "tags": ["books"],
-        "summary": "Get recommended books",
-        "description": "Fetches recommended books for today for the authenticated user.",
-        "operationId": "fetchRecommendedBooks",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Returns the recommended books. If no books are found, returns a message indicating no books are available.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "You have recommended books."
-                    },
-                    "arrayRecommendedBooks": {
-                      "type": "array",
-                      "description": "List of recommended books.",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "recommended books": {
-                            "type": "string",
-                            "format": "hh:mm",
-                            "description": ""
-                          },
-                          "value": {
-                            "type": "number",
-                            "description": "Amount of water consumed at this time, in milliliters."
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized access, token missing or invalid."
-          },
-          "404": {
-            "description": "The specified resource was not found."
-          }
-        }
-      }
-    },
     "/books/popular": {
   "get": {
     "tags": ["Books"],
@@ -679,15 +624,15 @@
         "email": {
           "type": "string",
           "format": "email",
-          "description": "Email address for user registration"
+          "description": "Email address for user sign up"
         },
         "password": {
           "type": "string",
-          "description": "Password for user registration"
+          "description": "Password for user sign up"
         }
       }
     },
-    "RegistrationResponse": {
+    "SignupResponse": {
       "type": "object",
       "properties": {
         "message": {
@@ -717,7 +662,7 @@
         }
       }
     },
-    "LoginRequest": {
+    "SigninRequest": {
       "type": "object",
       "required": ["email", "password"],
       "properties": {
@@ -733,12 +678,12 @@
         }
       }
     },
-    "LoginResponse": {
+    "SigninResponse": {
       "type": "object",
       "properties": {
         "message": {
           "type": "string",
-          "example": "Congratulations! Login successful!"
+          "example": "Congratulations! Sign in successful!"
         },
         "user": {
           "type": "object",
