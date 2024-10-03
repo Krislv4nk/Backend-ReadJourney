@@ -354,11 +354,54 @@
         "description": "Unauthorized. The user is not logged in or the token is invalid."
       }
     }
-  },
+  }
+},
+"/books/favorites/{bookId}": {
+  "get": {
+    "tags": ["Books"],
+    "summary": "Get favorite book by ID",
+    "description": "Fetches a specific favorite book by its ID.",
+    "security": [
+      {
+        "Bearer": []
+      }
+    ],
+    "parameters": [
+      {
+        "in": "path",
+        "name": "bookId",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "The ID of the favorite book."
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Favorite book details retrieved successfully.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Book"
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Favorite book not found."
+      },
+      "401": {
+        "description": "Unauthorized. The user is not logged in or the token is invalid."
+      }
+    }
+  }
+},
+"/books/favorites/add": {
   "post": {
     "tags": ["Books"],
     "summary": "Add a book to favorites",
-    "description": "Adds a book to the authenticated user's list of favorite books.",
+    "description": "Allows the authenticated user to add a book to their favorite list.",
     "security": [
       {
         "Bearer": []
@@ -369,74 +412,14 @@
       "content": {
         "application/json": {
           "schema": {
-            "type": "object",
-            "required": ["bookId"],
-            "properties": {
-              "bookId": {
-                "type": "string",
-                "description": "The unique identifier (ISBN) of the book to add to favorites.",
-                "example": "978-3-16-148410-0"
-              }
-            }
+            "$ref": "#/components/schemas/Book"
           }
         }
-      },
+      }
+    },
     "responses": {
-      "200": {
-        "description": "Book successfully added to favorites.",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Book added to favorites successfully."
-                },
-                "favoriteBook": {
-                  "$ref": "#/components/schemas/Book"
-                }
-              }
-            }
-          }
-        }
-      },
-      "400": {
-        "description": "Bad request. Missing or invalid parameters in the request body."
-      },
-      "404": {
-        "description": "Book not found with the provided ISBN."
-      },
-      "401": {
-        "description": "Unauthorized. The user is not logged in or the token is invalid."
-      }
-    }
-  }
-},
-"/books/favorites/{bookId}": {
-  "get": {
-    "tags": ["Books"],
-    "summary": "Get a specific favorite book by ID",
-    "description": "Fetches details of a specific book from the user's favorites by its unique ID (ISBN).",
-    "security": [
-      {
-        "Bearer": []
-      }
-    ],
-    "parameters": [
-      {
-        "in": "path",
-        "name": "bookId",
-        "required": true,
-        "schema": {
-          "type": "string"
-        },
-        "description": "The unique identifier (ISBN) of the book."
-      }
-    ],
-    "responses": {
-      "200": {
-        "description": "Book details retrieved successfully.",
+      "201": {
+        "description": "Book added to favorites successfully.",
         "content": {
           "application/json": {
             "schema": {
@@ -445,18 +428,17 @@
           }
         }
       },
-      "404": {
-        "description": "Book not found with the provided ID."
-      },
       "401": {
         "description": "Unauthorized. The user is not logged in or the token is invalid."
       }
     }
-  },
+  }
+},
+"/books/favorites/{bookId}/delete": {
   "delete": {
     "tags": ["Books"],
     "summary": "Remove a book from favorites",
-    "description": "Deletes a specific book from the user's favorites by its ID (ISBN).",
+    "description": "Allows the authenticated user to remove a book from their favorite list.",
     "security": [
       {
         "Bearer": []
@@ -470,28 +452,15 @@
         "schema": {
           "type": "string"
         },
-        "description": "The unique identifier (ISBN) of the book to delete."
+        "description": "The ID of the favorite book to remove."
       }
     ],
     "responses": {
       "200": {
-        "description": "Book successfully removed from favorites.",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Book removed from favorites successfully."
-                }
-              }
-            }
-          }
-        }
+        "description": "Book removed from favorites successfully."
       },
       "404": {
-        "description": "Book not found with the provided ID."
+        "description": "Favorite book not found."
       },
       "401": {
         "description": "Unauthorized. The user is not logged in or the token is invalid."
@@ -502,8 +471,8 @@
 "/books/favorites/{bookId}/page": {
   "patch": {
     "tags": ["Books"],
-    "summary": "Update current reading page",
-    "description": "Updates the current page where the user stopped reading a specific favorite book.",
+    "summary": "Update the current page",
+    "description": "Allows the authenticated user to update the current page of a favorite book.",
     "security": [
       {
         "Bearer": []
@@ -517,7 +486,7 @@
         "schema": {
           "type": "string"
         },
-        "description": "The unique identifier (ISBN) of the book."
+        "description": "The ID of the favorite book."
       }
     ],
     "requestBody": {
@@ -526,12 +495,10 @@
         "application/json": {
           "schema": {
             "type": "object",
-            "required": ["currentPage"],
             "properties": {
               "currentPage": {
-                "type": "number",
-                "description": "The current page number where the user stopped reading.",
-                "example": 123
+                "type": "integer",
+                "example": 150
               }
             }
           }
@@ -540,27 +507,10 @@
     },
     "responses": {
       "200": {
-        "description": "Current page updated successfully.",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Current page updated successfully."
-                },
-                "currentPage": {
-                  "type": "number",
-                  "example": 123
-                }
-              }
-            }
-          }
-        }
+        "description": "Current page updated successfully."
       },
       "404": {
-        "description": "Book not found with the provided ID."
+        "description": "Favorite book not found."
       },
       "401": {
         "description": "Unauthorized. The user is not logged in or the token is invalid."
@@ -569,8 +519,8 @@
   },
   "get": {
     "tags": ["Books"],
-    "summary": "Get current reading page",
-    "description": "Fetches the current page where the user last stopped reading a specific favorite book.",
+    "summary": "Get the current page",
+    "description": "Fetches the current page number of a specific favorite book.",
     "security": [
       {
         "Bearer": []
@@ -584,7 +534,7 @@
         "schema": {
           "type": "string"
         },
-        "description": "The unique identifier (ISBN) of the book."
+        "description": "The ID of the favorite book."
       }
     ],
     "responses": {
@@ -596,8 +546,8 @@
               "type": "object",
               "properties": {
                 "currentPage": {
-                  "type": "number",
-                  "example": 123
+                  "type": "integer",
+                  "example": 150
                 }
               }
             }
@@ -605,116 +555,321 @@
         }
       },
       "404": {
-        "description": "Book not found with the provided ID."
+        "description": "Favorite book not found."
       },
       "401": {
         "description": "Unauthorized. The user is not logged in or the token is invalid."
       }
     }
   }
-}}},
-
+},
         
+  
   "components": {
-  "schemas": {
-    "SignupRequest": {
-      "type": "object",
-      "required": ["email", "password"],
-      "properties": {
-        "email": {
-          "type": "string",
-          "format": "email",
-          "description": "Email address for user sign up"
-        },
-        "password": {
-          "type": "string",
-          "description": "Password for user sign up"
+    "schemas": {
+      "SignupRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address for user sign up"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password for user sign up"
+          }
         }
-      }
-    },
-    "SignupResponse": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string",
-          "example": "Congratulations! You have successfully registered!"
-        },
-        "newUser": {
-          "type": "object",
-          "properties": {
-            "_id": {
-              "type": "string",
-              "description": "Unique identifier for the user."
-            },
-            "email": {
-              "type": "string",
-              "description": "Email address of the user."
-            },
-            "token": {
-              "type": "string",
-              "description": "JWT token for the user."
-            },
-            "name": {
-              "type": "string",
-              "description": "Full name of the user."
+      },
+      "SignupResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Congratulations! You have successfully registered!"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "Unique identifier for the user."
+              },
+              "email": {
+                "type": "string",
+                "description": "Email address of the user."
+              },
+              "username": {
+                "type": "string",
+                "description": "Username of the user."
+              },
+              "subscription": {
+                "type": "string",
+                "description": "Subscription status of the user."
+              }
             }
           }
         }
-      }
-    },
-    "SigninRequest": {
-      "type": "object",
-      "required": ["email", "password"],
-      "properties": {
-        "email": {
-          "type": "string",
-          "format": "email",
-          "description": "User's email"
-        },
-        "password": {
-          "type": "string",
-          "description": "User's password",
-          "example": "qwerty123"
+      },
+      "SigninRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address for user sign in"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password for user sign in"
+          }
         }
-      }
-    },
-    "SigninResponse": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string",
-          "example": "Congratulations! Sign in successful!"
-        },
-        "user": {
-          "type": "object",
-          "properties": {
-            "_id": {
-              "type": "string",
-              "description": "Unique identifier for the user."
-            },
-            "email": {
-              "type": "string",
-              "description": "Email address of the user."
-            },
-            "token": {
-              "type": "string",
-              "description": "JWT token for the user."
-            },
-            "name": {
-              "type": "string",
-              "description": "Full name of the user."
+      },
+      "SigninResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "JWT token for the user."
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "Email address of the user."
+              },
+              "subscription": {
+                "type": "string",
+                "description": "Subscription status of the user."
+              }
             }
           }
         }
+      },
+      "ForgotPasswordRequest": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address to send password reset link"
+          }
+        }
+      },
+      "ForgotPasswordResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Message sent to email: {email}"
+          }
+        }
+      },
+      "RecoverPasswordRequest": {
+        "type": "object",
+        "required": ["password", "token"],
+        "properties": {
+          "password": {
+            "type": "string",
+            "description": "New password to set"
+          },
+          "token": {
+            "type": "string",
+            "description": "Password reset token"
+          }
+        }
+      },
+      "RecoverPasswordResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Password changed to: {email}"
+          }
+        }
+      },
+      "VerifyEmailResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Verification successful"
+          }
+        }
+      },
+      "ResendVerifyEmailRequest": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address to resend verification link"
+          }
+        }
+      },
+      "ResendVerifyEmailResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Verification email sent"
+          }
+        }
       }
-    }
-  },
-  "securitySchemes": {
-    "Bearer": {
-      "type": "http",
-      "scheme": "bearer",
-      "bearerFormat": "JWT"
-    }
-  }
+    }},
+      "AddBookToFavoritesRequest": {
+        "type": "object",
+        "required": ["bookId"],
+        "properties": {
+          "bookId": {
+            "type": "string",
+            "description": "Unique identifier for the book to be added to favorites."
+          }
+        }
+      },
+      "AddBookToFavoritesResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Book added to favorites"
+          },
+          "favorites": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Array of favorite book IDs."
+            }
+          }
+        }
+      },
+      "RemoveBookFromFavoritesResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Book removed from favorites"
+          },
+          "favorites": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Array of remaining favorite book IDs after removal."
+            }
+          }
+        }
+      },
+      "FavoriteBooksResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "bookId": {
+              "type": "string",
+              "description": "Unique identifier of the favorite book."
+            },
+            "title": {
+              "type": "string",
+              "description": "Title of the favorite book."
+            },
+            "author": {
+              "type": "string",
+              "description": "Author of the favorite book."
+            }
+          }
+        }
+      },
+      "TopBooksResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "isbn": {
+              "type": "string",
+              "description": "ISBN number of the book."
+            },
+            "title": {
+              "type": "string",
+              "description": "Title of the book."
+            },
+            "author": {
+              "type": "string",
+              "description": "Author of the book."
+            },
+            "rating": {
+              "type": "number",
+              "format": "float",
+              "description": "Rating of the book."
+            }
+          }
+        }
+      },
+      "BookResponse": {
+        "type": "object",
+        "properties": {
+          "isbn": {
+            "type": "string",
+            "description": "ISBN number of the book."
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the book."
+          },
+          "author": {
+            "type": "string",
+            "description": "Author of the book."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Summary of the book."
+          },
+          "rating": {
+            "type": "number",
+            "format": "float",
+            "description": "Rating of the book."
+          }
+        }
+      },
+      "UpdateCurrentPageRequest": {
+        "type": "object",
+        "required": ["bookId", "currentPage"],
+        "properties": {
+          "bookId": {
+            "type": "string",
+            "description": "Unique identifier of the book for which the current page is being updated."
+          },
+          "currentPage": {
+            "type": "integer",
+            "description": "Current page number where the user stopped reading."
+          }
+        }
+      },
+      "UpdateCurrentPageResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Page updated"
+          },
+          "currentPage": {
+            "type": "integer",
+            "description": "Updated current page number."
+          }
+        }
+      },
+      "GetCurrentPageResponse": {
+        "type": "object",
+        "properties": {
+          "currentPage": {
+            "type": "integer",
+            "description": "Last page number where the user stopped reading."
+          }
+        }
+      }
 }
 }
