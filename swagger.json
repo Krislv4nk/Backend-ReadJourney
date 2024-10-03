@@ -563,7 +563,8 @@
     }
   }
 },
-        
+   
+ 
   "components": {
     "schemas": {
       "SignupRequest": {
@@ -868,8 +869,13 @@
             "description": "Last page number where the user stopped reading."
           }
         }
+      },
+        "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
-}
-}
-}
-}
+    }
+  }}}}
+
