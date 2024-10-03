@@ -564,7 +564,6 @@
   }
 },
         
-  
   "components": {
     "schemas": {
       "SignupRequest": {
@@ -720,8 +719,7 @@
             "example": "Verification email sent"
           }
         }
-      }
-    }},
+      },
       "AddBookToFavoritesRequest": {
         "type": "object",
         "required": ["bookId"],
@@ -871,5 +869,7 @@
           }
         }
       }
+}
+}
 }
 }
