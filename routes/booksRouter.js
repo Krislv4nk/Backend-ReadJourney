@@ -12,7 +12,7 @@ bookRouter.get('/books/favorites', authenticate, booksController.getFavorites);
 
 bookRouter.get('/books/favorites/:bookId', authenticate, booksController.getBookById);
 
-bookRouter.post('/books/favorites', authenticate, booksController.addBook);
+bookRouter.post('/books/favorites/:bookId', authenticate, booksController.addBook);
 
 bookRouter.delete('/books/favorites/:bookId', authenticate, booksController.removeBook);
 

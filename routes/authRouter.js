@@ -4,7 +4,7 @@ import authController from "../controllers/authController.js";
 
 import validateBody from "../helpers/validateBody.js";
 
-import {userSignupSchema, userSigninSchema, userEmailSchema, recoverPasswordSchema} from "./../schemas/userSchema.js";
+import {userSignupSchema, userSigninSchema, userEmailSchema, recoverPasswordSchema, refreshTokenSchema} from "./../schemas/userSchema.js";
 
 import authenticate from "../middlewares/authenticate.js";
 
@@ -26,9 +26,9 @@ authRouter.post("/signOut", authenticate, authController.signout);
 
 authRouter.post("/forgot-password", validateBody(userEmailSchema), authController.forgotPassword);
 
-authRouter.post("/recover-password",validateBody(recoverPasswordSchema),authController.recoverPassword);
+authRouter.post("/recover-password", validateBody(recoverPasswordSchema), authController.recoverPassword);
 
-authRouter.patch("/subscription", authenticate, authController.updateStatus);
+authRouter.post("/refresh", validateBody(refreshTokenSchema), authController.refreshToken);
 
 
 export default authRouter;

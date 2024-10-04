@@ -7,7 +7,7 @@ import { nanoid } from "nanoid";
 import sendEmail from "../helpers/sendEmail.js";
 
 
-const {JWT_SECRET,BASE_URL} = process.env;
+const {JWT_SECRET,BASE_URL, JWT_REFRESH_SECRET} = process.env;
 
 
 
@@ -52,9 +52,10 @@ const signin = async(req, res )=> {
     const payload = {id, email};
     const token = jwt.sign(payload, JWT_SECRET, {expiresIn: "23h"});
 
-    await authServices.updateUser({_id: id}, {token});
+   const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, {expiresIn: "7d"});
+  await authServices.updateUser({_id: id}, {token, refreshToken});
 
-    res.json({token, user: { email, subscription: user.subscription}});
+  res.json({token, refreshToken, user: { email, subscription: user.subscription}});
 }
 
 const verify = async(req, res )=> {
@@ -162,6 +163,35 @@ const recoverPassword = async (req, res) => {
   });
 };
 
+
+const refreshToken = async (req, res) => {
+  const { refreshToken: token } = req.body;
+
+  if (!token) {
+    throw HttpError(401, "No token provided");
+  }
+  const user = await authServices.findUser({ refreshToken: token });
+  if (!user) {
+    throw HttpError(403, "Forbidden");
+  }
+
+  try {
+    const payload = jwt.verify(token, JWT_REFRESH_SECRET);
+    const { id, email } = payload;
+    const accessToken = jwt.sign({ id, email }, JWT_SECRET, { expiresIn: "23h" });
+    const newRefreshToken = jwt.sign({ id, email }, JWT_REFRESH_SECRET, { expiresIn: "7d" });
+    await authServices.updateUser({ _id: id }, { refreshToken: newRefreshToken });
+
+    res.json({
+      accessToken,
+      refreshToken: newRefreshToken,
+    });
+
+  } catch (error) {
+    throw HttpError(403, "Invalid token");
+  }
+};
+
 export default {
     signup: ctrlWrapper(signup),
     verify: ctrlWrapper(verify),
@@ -172,4 +202,5 @@ export default {
     updateStatus: ctrlWrapper(updateStatus),
      forgotPassword: ctrlWrapper(forgotPassword),
   recoverPassword: ctrlWrapper(recoverPassword),
+  refreshToken: ctrlWrapper(refreshToken),
 };
