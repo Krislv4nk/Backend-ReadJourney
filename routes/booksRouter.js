@@ -4,7 +4,7 @@ import booksController from "../controllers/booksController.js";
 
 const bookRouter = express.Router();
 
-bookRouter.get('/books/popular', authenticate, booksController.fetchTopBooks);
+bookRouter.get('/books/recommended', authenticate, booksController.fetchTopBooks);
 
 bookRouter.get('/books/:isbn', authenticate, booksController.fetchBookByISBN);
 

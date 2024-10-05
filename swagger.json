@@ -315,15 +315,15 @@
   }
 },
 
-    "/books/popular": {
+    "/books/recommended": {
       "get": {
         "tags": ["Books"],
-        "summary": "Get popular books",
-        "description": "Fetches the top popular books.",
+        "summary": "Get recommended books",
+        "description": "Fetches the top recommended books.",
         "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
-            "description": "List of popular books",
+            "description": "List of recommended books",
             "content": {
               "application/json": {
                 "schema": {
