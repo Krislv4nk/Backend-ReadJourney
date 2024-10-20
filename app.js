@@ -25,9 +25,9 @@ const startServer = async () => {
     await mongoose.connect(DB_HOST);
     console.log("Database connection successful");
 
-app.use("/users",authRouter);
-app.use('/books', booksRouter);
-    app.use('/ai', aiRouter);
+app.use("/api/users",authRouter);
+app.use('/api/books', booksRouter);
+    app.use('/api/ai', aiRouter);
     app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use((_, res) => {
