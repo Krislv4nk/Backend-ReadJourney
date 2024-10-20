@@ -8,11 +8,9 @@ import {userSignupSchema, userSigninSchema, userEmailSchema, recoverPasswordSche
 
 import authenticate from "../middlewares/authenticate.js";
 
-import upload from "../middlewares/upload.js";
-
 const authRouter = express.Router();
 
-authRouter.post("/signUp", upload.single("avatar"), validateBody(userSignupSchema), authController.signup);
+authRouter.post("/signUp", validateBody(userSignupSchema), authController.signup);
 
 authRouter.get("/verify/:verificationToken", authController.verify);
 
