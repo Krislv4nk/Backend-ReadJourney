@@ -7,7 +7,7 @@ import { nanoid } from "nanoid";
 import sendEmail from "../helpers/sendEmail.js";
 
 
-const {JWT_SECRET,BASE_URL, JWT_REFRESH_SECRET} = process.env;
+const {JWT_SECRET,BASE_URL, JWT_REFRESH_SECRET, FRONTEND_BASE_URL} = process.env;
 
 
 
@@ -80,7 +80,7 @@ if(user.verify) {
 const verifyEmail = {
     to: email,
     subject: "Verify email",
-    html: `<a href="${BASE_URL}/api/users/verify/${user.verificationToken}" target="_blank">Click to verify</a>`
+    html: `<a href="${FRONTEND_BASE_URL}verify/${user.verificationToken}" target="_blank">Click to verify</a>`
 };
 
 await sendEmail(verifyEmail);
