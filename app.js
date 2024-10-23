@@ -10,12 +10,12 @@ import booksRouter from "./routes/booksRouter.js";
 import authRouter from "./routes/authRouter.js";
 import { getSwaggerData } from "./services/SwaggerData.js";
 
-const { PORT , DB_HOST } = process.env;
+const { PORT , DB_HOST, FRONTEND_BASE_URL } = process.env;
 
 const app = express();
 
 app.use(morgan("tiny"));
-app.use(cors({ origin: "FRONTEND_BASE_URL" }));
+app.use(cors({ origin: FRONTEND_BASE_URL }));
 app.use(express.json());
 app.use(express.static("public"));
 
