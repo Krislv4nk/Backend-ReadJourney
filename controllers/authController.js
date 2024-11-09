@@ -24,7 +24,7 @@ const {JWT_SECRET,BASE_URL, JWT_REFRESH_SECRET, FRONTEND_BASE_URL} = process.env
       subject: "Confirm Your Email Address",
       html: `
           <div style="font-family: Arial, sans-serif; color: #333;">
-              <h2>Welcome to Our Community!</h2>
+              <h2>Welcome to ReadJourney!</h2>
               <p>Thank you for registering. To complete your registration and gain access to all features, please confirm your email address.</p>
               <a href="${BASE_URL}/users/verify/${verificationToken}" target="_blank" style="
                   display: inline-block;
@@ -95,10 +95,26 @@ if(user.verify) {
     throw HttpError(400, "Verification has already been passed");
 }
 const verifyEmail = {
-    to: email,
-    subject: "Verify email",
-    html: `<a href="${BASE_URL}/verify/${user.verificationToken}" target="_blank">Click to verify</a>`
-};
+  to: email,
+  subject: "Verify Your Email Address",
+  html: `
+      <div style="font-family: Arial, sans-serif; color: #333;">
+          <h2>Welcome back to ReadJourney!</h2>
+          <p>We noticed you requested another confirmation email. Please click the button below to confirm your email address and complete your registration.</p>
+          <a href="${BASE_URL}/users/verify/${user.verificationToken}" target="_blank" style="
+              display: inline-block;
+              padding: 10px 20px;
+              color: #fff;
+              background-color: #007bff;
+              text-decoration: none;
+              border-radius: 5px;
+              font-weight: bold;
+          ">Confirm Email Address</a>
+          <p>If you did not request this, please ignore this email.</p>
+          <p>Best regards, <br>Support Team</p>
+      </div>
+  `
+}
 
 await sendEmail(verifyEmail);
 res.status(200).json({message: "Verification email sent"});
