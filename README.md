@@ -135,6 +135,6 @@ API Documentation
 The project uses Swagger to document all REST API endpoints. To view the documentation, open the following in your browser after starting the server:
 
 
-http://localhost:5000/api-docs
+http://localhost:3000/api-docs
 
 
