@@ -82,6 +82,7 @@ if(!user) {
     throw HttpError(404, "User not found");
 }
 await authServices.updateUser({_id: user._id}, {verify: true, verificationToken: null});
+res.redirect(`$(FRONTEND_BASE_URL)/users/verify/${verificationToken}`);
 res.status(200).json({message: "Verification successful"});
 }
 
