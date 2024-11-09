@@ -83,7 +83,7 @@ if(!user) {
 }
 await authServices.updateUser({_id: user._id}, {verify: true, verificationToken: null});
 res.redirect(`$(FRONTEND_BASE_URL)/users/verify/${verificationToken}`);
-res.status(200).json({message: "Verification successful"});
+// res.status(200).json({message: "Verification successful"});
 }
 
 const resendVerifyEmail = async(req, res )=> {
