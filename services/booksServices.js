@@ -17,7 +17,7 @@ export const getBooksByGenre = async (genre) => {
     
     const response = await axios.get(`${OPEN_LIBRARY_API_URL}/${genre.toLowerCase()}.json`, {
       headers: {
-        'User-Agent': 'YourAppName/1.0',
+        'User-Agent': USER_AGENT,
       },
     });
 
