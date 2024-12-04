@@ -35,8 +35,7 @@ Backend ReadJourney is the server-side part of the ReadJourney web application, 
        UKR_NET_FROM =
        BASE_URL = 
 
-       OPEN_LIBRARY_URL_POPULAR =
-       OPEN_LIBRARY_URL_BOOK =
+       OPEN_LIBRARY_API_URL =
        USER_AGENT =
 
        OPENAI_API_KEY = 
