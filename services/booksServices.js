@@ -6,6 +6,33 @@ import HttpError from '../helpers/HttpError.js';
 
 const { OPEN_LIBRARY_URL_BOOK, OPEN_LIBRARY_URL_POPULAR, USER_AGENT } = process.env;
 
+// Отримання популярних книг
+export const getTopBooks = async () => {
+  const url = OPEN_LIBRARY_URL_POPULAR;
+  const response = await fetch(url, {
+    headers: {
+      'User-Agent': USER_AGENT,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+
+  const data = await response.json();
+
+  if (!data.works || data.works.length === 0) {
+    throw new HttpError(404, 'No popular books found');
+  }
+
+  return data.works;
+};
+
+export const recommendBooks = async(userPreferences) =>{
+  const recommendedBooks = await Book.find({ genre: { $in: userPreferences.genres } });
+  return recommendedBooks;
+}
+
 // Додавання книги до улюблених
 export const addBookToFavorites = async (userId, bookId) => {
   const user = await User.findById(userId);
@@ -109,27 +136,6 @@ export const getCurrentPageForBook = async (userId, bookId) => {
   return favorite.currentPage;
 };
 
-// Отримання популярних книг
-export const getTopBooks = async () => {
-  const url = OPEN_LIBRARY_URL_POPULAR;
-  const response = await fetch(url, {
-    headers: {
-      'User-Agent': USER_AGENT,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-
-  const data = await response.json();
-
-  if (!data.works || data.works.length === 0) {
-    throw new HttpError(404, 'No popular books found');
-  }
-
-  return data.works;
-};
 
 // Отримання книги за ISBN
 export const getBookByISBN = async (isbn) => {
@@ -153,10 +159,6 @@ export const getBookByISBN = async (isbn) => {
   return data[`ISBN:${isbn}`];
 };
 
-export const recommendBooks = async(userPreferences) =>{
-  const recommendedBooks = await Book.find({ genre: { $in: userPreferences.genres } });
-  return recommendedBooks;
-}
 
 
 
