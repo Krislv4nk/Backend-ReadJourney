@@ -3,49 +3,118 @@
 import User from '../models/User.js';
 import Book from '../models/Book.js';
 import HttpError from '../helpers/HttpError.js';
+import axios from 'axios';
 
-const { OPEN_LIBRARY_URL_BOOK, OPEN_LIBRARY_URL_POPULAR, USER_AGENT } = process.env;
+const { OPEN_LIBRARY_URL_BOOK, OPEN_LIBRARY_API_URL, USER_AGENT } = process.env;
 
-// Отримання популярних книг
-export const getTopBooks = async () => {
-  const url = OPEN_LIBRARY_URL_POPULAR;
-  const response = await fetch(url, {
-    headers: {
-      'User-Agent': USER_AGENT,
-    },
-  });
 
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
+export const getBooksByGenre = async (genre) => {
+  if (!genre) {
+    throw new Error('Genre is required');
   }
 
-  const data = await response.json();
+  try {
+    
+    const response = await axios.get(`${OPEN_LIBRARY_API_URL}/${genre.toLowerCase()}.json`, {
+      headers: {
+        'User-Agent': 'YourAppName/1.0',
+      },
+    });
 
-  if (!data.works || data.works.length === 0) {
-    throw new HttpError(404, 'No popular books found');
+    
+    return response.data.works.map((book) => ({
+      title: book.title,
+      author: book.authors?.[0]?.name || 'Unknown Author',
+      cover: book.cover_id ? `https://covers.openlibrary.org/b/id/${book.cover_id}-L.jpg` : null,
+      key: book.key, 
+    }));
+  } catch (error) {
+    console.error('Error fetching books by genre:', error.message);
+    throw new Error('Failed to fetch books. Please try again later.');
   }
-
-  return data.works;
 };
 
-export const recommendBooks = async(userPreferences) =>{
-  const recommendedBooks = await Book.find({ genre: { $in: userPreferences.genres } });
-  return recommendedBooks;
-}
 
-// Додавання книги до улюблених
+export const getBooksByAuthor = async (author) => {
+  if (!author) {
+    throw new HttpError(400, 'Author is required');
+  }
+
+  try {
+    const response = await axios.get(
+      `${OPEN_LIBRARY_API_URL}/search.json?author=${encodeURIComponent(author)}`,
+      {
+        headers: {
+          'User-Agent': USER_AGENT,
+        },
+      }
+    );
+
+    return response.data.docs.map((book) => ({
+      title: book.title,
+      author: book.author_name?.[0] || 'Unknown Author',
+      cover: book.cover_i
+        ? `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`
+        : null,
+      key: book.key,
+      publishYear: book.first_publish_year || 'Unknown Year',
+    }));
+  } catch (error) {
+    console.error('Error fetching books by author:', error.message);
+    throw new HttpError(500, 'Failed to fetch books by author');
+  }
+};
+
+
+
+export const getBooksByTitle = async (title) => {
+  if (!title) {
+    throw new HttpError(400, 'Title is required');
+  }
+
+  try {
+    const response = await axios.get(
+      `${OPEN_LIBRARY_API_URL}/search.json?title=${encodeURIComponent(title)}`,
+      {
+        headers: {
+          'User-Agent': USER_AGENT,
+        },
+      }
+    );
+
+    return response.data.docs.map((book) => ({
+      title: book.title,
+      author: book.author_name?.[0] || 'Unknown Author',
+      cover: book.cover_i
+        ? `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`
+        : null,
+      key: book.key,
+      publishYear: book.first_publish_year || 'Unknown Year',
+    }));
+  } catch (error) {
+    console.error('Error fetching books by title:', error.message);
+    throw new HttpError(500, 'Failed to fetch books by title');
+  }
+};
+
+
+
+
+
+
+// 
 export const addBookToFavorites = async (userId, bookId) => {
   const user = await User.findById(userId);
   if (!user) {
     throw new HttpError(404, 'User not found');
   }
 
-  // Перевіряємо, чи книга є в базі даних
+  // 
   let book = await Book.findOne({ isbn: bookId });
   if (!book) {
-    // Отримуємо книгу з Open Library API
+    // 
     const bookData = await getBookByISBN(bookId);
-    // Зберігаємо книгу в базу даних
+    // 
     book = new Book({
       title: bookData.title,
       author: bookData.authors[0].name,
@@ -59,7 +128,7 @@ export const addBookToFavorites = async (userId, bookId) => {
     await book.save();
   }
 
-  // Додаємо книгу до улюблених з початковою сторінкою, якщо вона ще не додана
+  // 
   const favorite = user.favorites.find(fav => fav.book.equals(book._id));
   if (!favorite) {
     user.favorites.push({ book: book._id, currentPage: 1 });
@@ -69,7 +138,7 @@ export const addBookToFavorites = async (userId, bookId) => {
   return user;
 };
 
-// Видалення книги з улюблених
+// 
 export const removeBookFromFavorites = async (userId, bookId) => {
   const user = await User.findById(userId);
   if (!user) {
@@ -81,7 +150,7 @@ export const removeBookFromFavorites = async (userId, bookId) => {
   return user;
 };
 
-// Отримання улюблених книг користувача
+// 
 export const getFavoriteBooks = async (userId) => {
   const user = await User.findById(userId).populate('favorites.book');
   if (!user) {
@@ -103,7 +172,7 @@ export const getBookById = async (req, res) => {
   res.status(200).json(book); 
 };
 
-// Оновлення поточної сторінки книги
+// 
 export const updateCurrentPage = async (userId, bookId, currentPage) => {
   const user = await User.findById(userId);
   if (!user) {
@@ -121,7 +190,7 @@ export const updateCurrentPage = async (userId, bookId, currentPage) => {
   return favorite;
 };
 
-// Отримання поточної сторінки книги для користувача
+// 
 export const getCurrentPageForBook = async (userId, bookId) => {
   const user = await User.findById(userId);
   if (!user) {
@@ -137,7 +206,7 @@ export const getCurrentPageForBook = async (userId, bookId) => {
 };
 
 
-// Отримання книги за ISBN
+// 
 export const getBookByISBN = async (isbn) => {
   const url = OPEN_LIBRARY_URL_BOOK.replace('${isbn}', isbn);
   const response = await fetch(url, {

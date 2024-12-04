@@ -2,6 +2,54 @@
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import * as booksServices from '../services/booksServices.js';
 
+
+const getBooksByGenre = async (req, res) => {
+  const { genre } = req.query; // отримуємо жанр із запиту
+
+  if (!genre) {
+    return res.status(400).json({ error: 'Genre is required' });
+  }
+
+  try {
+    // Викликаємо сервіс для пошуку книг за жанром
+    const books = await getBooksByGenre(genre);
+
+    return res.status(200).json({ genre, books });
+  } catch (error) {
+    console.error('Error in getBooksByGenreController:', error.message);
+    return res.status(500).json({
+      error: 'Failed to fetch books. Please try again later.',
+    });
+  }
+};
+
+const searchBooksByAuthor = async (req, res) => {
+  const { author } = req.query;
+
+  try {
+    const books = await getBooksByAuthor(author);
+    res.status(200).json({ books });
+  } catch (error) {
+    console.error('Error in searchBooksByAuthor:', error.message);
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+};
+
+
+const searchBooksByTitle = async (req, res) => {
+  const { title } = req.query;
+
+  try {
+    const books = await getBooksByTitle(title);
+    res.status(200).json({ books });
+  } catch (error) {
+    console.error('Error in searchBooksByTitle:', error.message);
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+};
+
+
+
 // Додавання книги до улюблених
 const addBook = async (req, res) => {
   const { userId } = req.user;
@@ -27,11 +75,7 @@ const getFavorites = async (req, res) => {
   res.status(200).json(favorites);
 };
 
-// Отримання популярних книг
-const fetchTopBooks = async (req, res) => {
-  const books = await booksServices.getTopBooks();
-  res.status(200).json(books);
-};
+
 
 // Отримання книги за ISBN
 const fetchBookByISBN = async (req, res) => {
@@ -74,7 +118,9 @@ export default {
   addBook: ctrlWrapper(addBook),
   removeBook: ctrlWrapper(removeBook),
   getFavorites: ctrlWrapper(getFavorites),
-  fetchTopBooks: ctrlWrapper(fetchTopBooks),
+  getBooksByGenre: ctrlWrapper(getBooksByGenre),
+  searchBooksByTitle: ctrlWrapper(searchBooksByTitle),
+  searchBooksByAuthor: ctrlWrapper(searchBooksByAuthor),
   fetchBookByISBN: ctrlWrapper(fetchBookByISBN),
   getBookById: ctrlWrapper(getBookById),
   updateCurrentPage: ctrlWrapper(updateCurrentPage), 
