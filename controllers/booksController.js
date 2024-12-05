@@ -4,14 +4,13 @@ import * as booksServices from '../services/booksServices.js';
 
 
 const getBooksByGenre = async (req, res) => {
-  const { genre } = req.query; // отримуємо жанр із запиту
+  const { genre } = req.query; 
 
   if (!genre) {
     return res.status(400).json({ error: 'Genre is required' });
   }
 
   try {
-    // Викликаємо сервіс для пошуку книг за жанром
     const books = await getBooksByGenre(genre);
 
     return res.status(200).json({ genre, books });
@@ -23,7 +22,7 @@ const getBooksByGenre = async (req, res) => {
   }
 };
 
-const searchBooksByAuthor = async (req, res) => {
+const getBooksByAuthor = async (req, res) => {
   const { author } = req.query;
 
   try {
@@ -36,7 +35,7 @@ const searchBooksByAuthor = async (req, res) => {
 };
 
 
-const searchBooksByTitle = async (req, res) => {
+const getBooksByTitle = async (req, res) => {
   const { title } = req.query;
 
   try {
@@ -50,7 +49,7 @@ const searchBooksByTitle = async (req, res) => {
 
 
 
-// Додавання книги до улюблених
+// 
 const addBook = async (req, res) => {
   const { userId } = req.user;
   const { bookId } = req.body;
@@ -59,7 +58,7 @@ const addBook = async (req, res) => {
   res.status(201).json({ message: 'Book added to favorites', favorites: user.favorites });
 };
 
-// Видалення книги з улюблених
+// 
 const removeBook = async (req, res) => {
   const { userId } = req.user;
   const { bookId } = req.params;
@@ -68,7 +67,7 @@ const removeBook = async (req, res) => {
   res.status(200).json({ message: 'Book removed from favorites', favorites: user.favorites });
 };
 
-// Отримання списку улюблених книг
+//
 const getFavorites = async (req, res) => {
   const { userId } = req.user;
   const favorites = await booksServices.getFavoriteBooks(userId);
@@ -77,14 +76,14 @@ const getFavorites = async (req, res) => {
 
 
 
-// Отримання книги за ISBN
+// 
 const fetchBookByISBN = async (req, res) => {
   const { isbn } = req.params;
   const book = await booksServices.getBookByISBN(isbn);
   res.status(200).json(book);
 };
 
-// Отримання книги за ID
+// 
 const getBookById = async (req, res) => {
   const { id } = req.params;
   const book = await booksServices.getBookById(id);
@@ -96,7 +95,7 @@ const getBookById = async (req, res) => {
   res.status(200).json(book);
 };
 
-// Оновлення поточної сторінки, де користувач зупинився читати
+// 
 const updateCurrentPage = async (req, res) => {
   const { userId } = req.user;
   const { bookId, currentPage } = req.body;
@@ -105,7 +104,7 @@ const updateCurrentPage = async (req, res) => {
   res.status(200).json({ message: 'Page updated', currentPage: favorite.currentPage });
 };
 
-// Отримання останньої сторінки, де користувач зупинився
+// 
 const getCurrentPage = async (req, res) => {
   const { userId } = req.user;
   const { bookId } = req.params;
@@ -116,11 +115,11 @@ const getCurrentPage = async (req, res) => {
 
 export default {
   addBook: ctrlWrapper(addBook),
-  removeBook: ctrlWrapper(removeBook),
+ removeBook: ctrlWrapper(removeBook),
   getFavorites: ctrlWrapper(getFavorites),
   getBooksByGenre: ctrlWrapper(getBooksByGenre),
-  searchBooksByTitle: ctrlWrapper(searchBooksByTitle),
-  searchBooksByAuthor: ctrlWrapper(searchBooksByAuthor),
+  getBooksByTitle: ctrlWrapper(getBooksByTitle),
+  getBooksByAuthor: ctrlWrapper(getBooksByAuthor),
   fetchBookByISBN: ctrlWrapper(fetchBookByISBN),
   getBookById: ctrlWrapper(getBookById),
   updateCurrentPage: ctrlWrapper(updateCurrentPage), 

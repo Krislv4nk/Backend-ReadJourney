@@ -13,8 +13,8 @@ bookRouter.get('/books/isbn/:isbn', authenticate, booksController.fetchBookByISB
 
 bookRouter.get('/books/favorites', authenticate, booksController.getFavorites);
 bookRouter.get('/books/favorites/:bookId', authenticate, booksController.getBookById);
-bookRouter.post('/books/favorites/:bookId', authenticate, booksController.addBookToFavorites);
-bookRouter.delete('/books/favorites/:bookId', authenticate, booksController.removeBookFromFavorites);
+bookRouter.post('/books/favorites/:bookId', authenticate, booksController.addBook);
+bookRouter.delete('/books/favorites/:bookId', authenticate, booksController.removeBook);
 
 
 bookRouter.patch('/books/favorites/:bookId/page', authenticate, booksController.updateCurrentPage);
