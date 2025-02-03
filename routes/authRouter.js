@@ -10,13 +10,13 @@ import authenticate from "../middlewares/authenticate.js";
 
 const authRouter = express.Router();
 
-authRouter.post("/signUp", validateBody(userSignupSchema), authController.signup);
+authRouter.post("/signup", validateBody(userSignupSchema), authController.signup);
 
 authRouter.get("/verify/:verificationToken", authController.verify);
 
 authRouter.post("/verify", validateBody(userEmailSchema), authController.resendVerifyEmail);
 
-authRouter.post("/signIn", validateBody(userSigninSchema), authController.signin);
+authRouter.post("/signin", validateBody(userSigninSchema), authController.signin);
 
 authRouter.get("/current", authenticate, authController.getCurrent);
 

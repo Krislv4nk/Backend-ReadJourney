@@ -12,7 +12,7 @@ export const userSignupSchema = Joi.object({
 export const userSigninSchema = Joi.object({
     email: Joi.string().pattern(emailRegexp).required(),
     password: Joi.string().min(6).required(),
-    favorites: [{ type: String }],
+    favorites: [{ type: string }],
 })
 
 export const userEmailSchema = Joi.object({
