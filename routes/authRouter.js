@@ -20,7 +20,7 @@ authRouter.post("/signin", validateBody(userSigninSchema), authController.signin
 
 authRouter.get("/current", authenticate, authController.getCurrent);
 
-authRouter.post("/signOut", authenticate, authController.signout);
+authRouter.post("/signout", authenticate, authController.signout);
 
 authRouter.post("/forgot-password", validateBody(userEmailSchema), authController.forgotPassword);
 
