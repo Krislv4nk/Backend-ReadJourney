@@ -49,7 +49,7 @@ const {JWT_SECRET,BASE_URL, JWT_REFRESH_SECRET, FRONTEND_BASE_URL} = process.env
       username: newUser.username,
       email: newUser.email,
       subscription: newUser.subscription,
-  }}).redirect(`${FRONTEND_BASE_URL}/users/verify/success`);
+  }});
 }  
 
 const signin = async(req, res )=> {
