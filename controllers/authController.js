@@ -26,7 +26,7 @@ const {JWT_SECRET,BASE_URL, JWT_REFRESH_SECRET, FRONTEND_BASE_URL} = process.env
           <div style="font-family: Arial, sans-serif; color: #333;">
               <h2>Welcome to ReadJourney!</h2>
               <p>Thank you for registering. To complete your registration and gain access to all features, please confirm your email address.</p>
-              <a href="${BASE_URL}/users/verify/${verificationToken}" target="_blank" style="
+              <a href="${FRONTEND_BASE_URL}/users/verify/${verificationToken}" target="_blank" style="
                   display: inline-block;
                   padding: 10px 20px;
                   color: #fff;
